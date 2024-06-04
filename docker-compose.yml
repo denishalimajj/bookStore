@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.1'
 
 services:
   app:
@@ -11,10 +11,10 @@ services:
     volumes:
       - ./:/var/www/html
     depends_on:
-      - db
+      - db  
 
   db:
-    image: postgres:16
+    image: postgres
     container_name: laravel_db
     ports:
       - "5432:5432"
@@ -23,7 +23,18 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin
     volumes:
-      - dbdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4:latest
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
 
 volumes:
-  dbdata:
+  pgdata:

@@ -1,66 +1,94 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+Book Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This project is a RESTful API for managing book records, developed using PHP and the Laravel framework. The API allows users to add, retrieve, update, and delete book entries. Each book record includes an ID, title, author, and publication year.
 
-## About Laravel
+Features
+- CRUD Operations: Create, Read, Update, Delete book records.
+- JSON Responses: API responses are formatted in JSON.
+- Data Persistence: Uses PostgreSQL for data storage.
+- Validation and Error Handling: Ensures no empty fields and positive publication year, with meaningful error messages.
+- Security: Secures API with JWT (JSON Web Token) for authentication and authorization.
+- Testing: Comprehensive unit and feature tests using PHPUnit.
+- Documentation: API endpoints documented using Swagger.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Requirements
+- PHP 7.4 or higher
+- Composer
+- Docker and Docker Compose
+- PostgreSQL
+- PgAdmin 
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Setup Instructions
+1. Clone the Repository
+https://github.com/denishalimajj/bookStore.git
+cd book-management
+2. Copy .env.example to .env
+cp .env.example .env
+3. Configure Environment Variables
+Update the .env file with your database and JWT settings:
+DB_CONNECTION=pgsql
+DB_HOST=postgres <-- Make sure that the container name is passed here
+DB_PORT=5432
+DB_DATABASE=your_database
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+JWT_SECRET=your_jwt_secret
+4. Install Dependencies
+composer install
+5. Generate Application Key
+php artisan key:generate
+6. Start Docker Containers
+docker-compose up -d
+7. Run Migrations
+docker exec -it laravel_app php artisan migrate
+8. Seed the Database (Optional)
+docker exec -it laravel_app php artisan db:seed
 
-## Learning Laravel
+pgAdmin Setup
+1. Access pgAdmin
+Open your web browser and navigate to http://localhost:5050.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+2. Log In
+Log in using the default email and password provided in the docker-compose.yml file (or as configured in your setup):
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Email: admin@admin.com
+Password: admin
+3. Register a Server
+- Right-click on "Servers" in the Browser panel.
+- Select "Register" -> "Server".
+- In the "General" tab, enter a name for the server (e.g., Book Management PostgreSQL).
+- In the "Connection" tab, enter the following details:
+Host: postgres
+Port: 5432
+Maintenance database: your_database
+Username: your_username
+Password: your_password
+Click "Save".
+You should now see your PostgreSQL server listed under "Servers" in pgAdmin, and you can manage your database from there.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
+Usage
+Running the Application
+The application will be available at http://localhost:8000.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+API Endpoints
+Create a Book: POST /api/books
+Retrieve All Books: GET /api/books
+Retrieve a Single Book: GET /api/books/{id}
+Update a Book: PUT /api/books/{id}
+Delete a Book: DELETE /api/books/{id}
 
-### Premium Partners
+Example Requests
+Create a Book
+curl -X POST http://localhost:8000/api/books -H "Content-Type: application/json" -d '{"title": "Book Title", "author": "Author Name", "publication_year": 2020}'
+Retrieve All Books
+curl http://localhost:8000/api/books
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+Testing
+Run the tests using PHPUnit:
+docker exec -it laravel_app php artisan test
 
-## Contributing
+Documentation
+API documentation is available at http://localhost:8000/api/documentation.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
