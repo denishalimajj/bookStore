@@ -82,16 +82,6 @@
                     "email": {
                         "type": "string",
                         "example": "john.doe@example.com"
-                    },
-                    "created_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "example": 1672574400
-                    },
-                    "updated_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "example": 1672574400
                     }
                 }
             },
@@ -279,7 +269,7 @@
             },
             "post": {
                 "summary": "Creates a new book.",
-                "description": "This endpoint adds a new book into the system. Only loggedin users can use this call.",
+                "description": "This endpoint adds a new book into the system. Only logged-in users can use this call.",
                 "tags": [
                     "Books"
                 ],
@@ -341,7 +331,7 @@
         "/books/{id}": {
             "delete": {
                 "summary": "Deletes a book data.",
-                "description": "This endpoint deletes a book. Only loggedin users can use this call.",
+                "description": "This endpoint deletes a book. Only logged-in users can use this call.",
                 "tags": [
                     "Books"
                 ],
@@ -395,7 +385,7 @@
             },
             "get": {
                 "summary": "Reads the data of the given book key.",
-                "description": "This endpoint returns the data of the given book key. Only loggedin users can use this call.",
+                "description": "This endpoint returns the data of the given book key. Only logged-in users can use this call.",
                 "tags": [
                     "Books"
                 ],
