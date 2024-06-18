@@ -10,9 +10,9 @@ jobs:
       postgres:
         image: postgres:latest
         env:
-          POSTGRES_DB: bookstore_test
+          POSTGRES_DB: book_store_testing
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: password
+          POSTGRES_PASSWORD: admin
         ports:
           - 5432:5432
         options: >-
