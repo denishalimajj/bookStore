@@ -23,12 +23,6 @@ jobs:
         with:
           php-version: '8.2'
 
-      - name: Install dependencies
-        run: docker exec -it laravel_app composer install
-
-      - name: Copy .env.testing
-        run: docker exec -it laravel_app cp .env.example .env.testing
-
       - name: Run migrations
         run: docker exec -it laravel_app app php artisan migrate --env=testing
 
