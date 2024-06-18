@@ -10,9 +10,9 @@ jobs:
       postgres:
         image: postgres:latest
         env:
-          POSTGRES_DB: book_store_testing
+          POSTGRES_DB: bookstore_test
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: admin
+          POSTGRES_PASSWORD: password
         ports:
           - 5432:5432
         options: >-
@@ -22,22 +22,30 @@ jobs:
           --health-retries=5
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.2'
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
 
-    - name: Install dependencies
-      run: composer install
+      - name: Install dependencies
+        run: composer install
 
-    - name: Copy .env.testing
-      run: cp .env.example .env.testing
+      - name: Copy .env.testing
+        run: cp .env.example .env.testing
 
-    - name: Run migrations
-      run: php artisan migrate --env=testing
+      - name: Ensure Docker Compose services are up
+        run: docker-compose up -d
+        # Add a delay to ensure services start up properly
+        # sleep 10s
 
-    - name: Run tests
-      run: php artisan test
+      - name: Wait for PostgreSQL to be ready
+        run: docker-compose exec -T db pg_isready --wait
+
+      - name: Run migrations
+        run: docker-compose exec -T app php artisan migrate --env=testing
+
+      - name: Run tests
+        run: docker-compose exec -T app php artisan test
