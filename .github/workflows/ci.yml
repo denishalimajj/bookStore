@@ -1,13 +1,31 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     services:
-      postgres:
+      app:
+        build:
+          context: .
+          dockerfile: Dockerfile
+        container_name: laravel_app
+        ports:
+          - "8000:8000"
+        volumes:
+          - ./:/var/www/html
+        depends_on:
+          - db
+
+      db:
         image: postgres:latest
         env:
           POSTGRES_DB: bookstore_test
@@ -21,6 +39,17 @@ jobs:
           --health-timeout=5s
           --health-retries=5
 
+      pgadmin:
+        container_name: pgadmin
+        image: dpage/pgadmin4:latest
+        environment:
+          - PGADMIN_DEFAULT_EMAIL=admin@gmail.com
+          - PGADMIN_DEFAULT_PASSWORD=admin
+        ports:
+          - "5050:80"
+        depends_on:
+          - db
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -31,15 +60,13 @@ jobs:
           php-version: '8.2'
 
       - name: Install dependencies
-        run: composer install
+        run: docker-compose exec -T app composer install
 
       - name: Copy .env.testing
-        run: cp .env.example .env.testing
+        run: docker-compose exec -T app cp .env.example .env.testing
 
       - name: Ensure Docker Compose services are up
         run: docker-compose up -d
-        # Add a delay to ensure services start up properly
-        # sleep 10s
 
       - name: Wait for PostgreSQL to be ready
         run: docker-compose exec -T db pg_isready --wait
