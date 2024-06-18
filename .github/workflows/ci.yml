@@ -14,7 +14,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres
+        image: postgres:latest
         env:
           POSTGRES_DB: bookstore_test
           POSTGRES_USER: postgres
@@ -31,25 +31,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Set up Docker Compose
+        run: docker-compose -f docker-compose.yml up -d
+
+      - name: Wait for PostgreSQL to be ready
+        run: docker-compose exec -T db pg_isready --wait
+
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
 
       - name: Install dependencies
-        run: composer install
+        run: docker exec -it laravel_app composer install
 
       - name: Copy .env.testing
-        run: cp .env.example .env.testing
-
-      - name: Start Docker Compose services
-        run: docker-compose -f path/to/your/docker-compose.yml up -d
-
-      - name: Wait for PostgreSQL to be ready
-        run: docker-compose -f path/to/your/docker-compose.yml exec -T db pg_isready --wait
+        run: docker exec -it laravel_app cp .env.example .env.testing
 
       - name: Run migrations
-        run: docker-compose -f path/to/your/docker-compose.yml exec -T app php artisan migrate --env=testing
+        run: docker exec -it laravel_app app php artisan migrate --env=testing
 
       - name: Run tests
-        run: docker-compose -f path/to/your/docker-compose.yml exec -T app php artisan test
+        run: docker exec -it laravel_app php artisan test
