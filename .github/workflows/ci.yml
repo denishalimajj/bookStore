@@ -13,20 +13,8 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      app:
-        build:
-          context: .
-          dockerfile: Dockerfile
-        container_name: laravel_app
-        ports:
-          - "8000:8000"
-        volumes:
-          - ./:/var/www/html
-        depends_on:
-          - db
-
-      db:
-        image: postgres:latest
+      postgres:
+        image: postgres
         env:
           POSTGRES_DB: bookstore_test
           POSTGRES_USER: postgres
@@ -39,17 +27,6 @@ jobs:
           --health-timeout=5s
           --health-retries=5
 
-      pgadmin:
-        container_name: pgadmin
-        image: dpage/pgadmin4:latest
-        environment:
-          - PGADMIN_DEFAULT_EMAIL=admin@gmail.com
-          - PGADMIN_DEFAULT_PASSWORD=admin
-        ports:
-          - "5050:80"
-        depends_on:
-          - db
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -60,19 +37,19 @@ jobs:
           php-version: '8.2'
 
       - name: Install dependencies
-        run: docker-compose exec -T app composer install
+        run: composer install
 
       - name: Copy .env.testing
-        run: docker-compose exec -T app cp .env.example .env.testing
+        run: cp .env.example .env.testing
 
-      - name: Ensure Docker Compose services are up
-        run: docker-compose up -d
+      - name: Start Docker Compose services
+        run: docker-compose -f path/to/your/docker-compose.yml up -d
 
       - name: Wait for PostgreSQL to be ready
-        run: docker-compose exec -T db pg_isready --wait
+        run: docker-compose -f path/to/your/docker-compose.yml exec -T db pg_isready --wait
 
       - name: Run migrations
-        run: docker-compose exec -T app php artisan migrate --env=testing
+        run: docker-compose -f path/to/your/docker-compose.yml exec -T app php artisan migrate --env=testing
 
       - name: Run tests
-        run: docker-compose exec -T app php artisan test
+        run: docker-compose -f path/to/your/docker-compose.yml exec -T app php artisan test
