@@ -18,9 +18,6 @@ jobs:
       - name: Set up Docker Compose
         run: docker-compose -f docker-compose.yml up -d
 
-      - name: Wait for PostgreSQL to be ready
-        run: docker-compose exec -T db pg_isready --wait
-
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
